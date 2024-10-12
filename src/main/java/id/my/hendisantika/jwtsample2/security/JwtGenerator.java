@@ -1,5 +1,6 @@
 package id.my.hendisantika.jwtsample2.security;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -47,5 +48,10 @@ public class JwtGenerator {
                 .setExpiration(expireDate)
                 .signWith(SignatureAlgorithm.HS512, secretKey).compact();
         return token;
+    }
+
+    public String getUsernameFromJWT(String token) {
+        Claims claims = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody();
+        return claims.getSubject();
     }
 }
