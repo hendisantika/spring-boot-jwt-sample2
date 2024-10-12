@@ -8,6 +8,10 @@ import id.my.hendisantika.jwtsample2.model.Role;
 import id.my.hendisantika.jwtsample2.repository.AppUserRepository;
 import id.my.hendisantika.jwtsample2.repository.RoleRepository;
 import id.my.hendisantika.jwtsample2.security.JwtGenerator;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,6 +49,23 @@ public class AuthController {
     private final JwtGenerator jwtGenerator;
 
     @PostMapping("register")
+    @Operation(
+            summary = "Add New User Data",
+            description = "Add New User Data.",
+            tags = {"Auth"})
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    description = "Success",
+                    responseCode = "200",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation =
+                            RegisterDto.class))
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(description = "Not found", responseCode = "404",
+                    content = @Content),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(description = "Internal error", responseCode = "500"
+                    , content = @Content)
+    }
+    )
     public ResponseEntity<String> register(@RequestBody RegisterDto registerDto) {
         if (appUserRepository.existsByUsername(registerDto.getUsername())) {
             return new ResponseEntity<>("Username is taken!", HttpStatus.BAD_REQUEST);
@@ -56,13 +77,29 @@ public class AuthController {
 
         Role roles = roleRepository.findByName(registerDto.getRole()).get();
         appUser.setRoles(Collections.singletonList(roles));
-
         appUserRepository.save(appUser);
 
         return new ResponseEntity<>("User registered success!", HttpStatus.OK);
     }
 
     @PostMapping("login")
+    @Operation(
+            summary = "Login User Data",
+            description = "Login User Data.",
+            tags = {"Auth"})
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    description = "Success",
+                    responseCode = "200",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation =
+                            AuthResponseDto.class))
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(description = "Not found", responseCode = "404",
+                    content = @Content),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(description = "Internal error", responseCode = "500"
+                    , content = @Content)
+    }
+    )
     public ResponseEntity<AuthResponseDto> login(@RequestBody LoginDto loginDto) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword()));

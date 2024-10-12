@@ -34,21 +34,23 @@ public class JwtGenerator {
     public String generateToken(Authentication authentication) {
         String username = authentication.getName();
         Date currentDate = new Date();
-        Date expireDate = new Date(currentDate.getTime() + JWT_EXPIRATION);
+        // 15 minutes in milliseconds (15 * 60 * 1000)
+        long fifteenMinutesInMillis = 15 * 60 * 1000;
+        Date expireDate = new Date(currentDate.getTime() + fifteenMinutesInMillis);
 
         // Extract roles from the authentication object
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         List<String> roles = authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
 
         // Build the token with roles included in claims
-        String token = Jwts
+        // Inclusion of roles in claims
+        return Jwts
                 .builder()
                 .setSubject(username)
                 .claim("roles", roles) // Inclusion of roles in claims
                 .setIssuedAt(new Date())
                 .setExpiration(expireDate)
                 .signWith(SignatureAlgorithm.HS512, secretKey).compact();
-        return token;
     }
 
     public String getUsernameFromJWT(String token) {
