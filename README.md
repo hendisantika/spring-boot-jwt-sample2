@@ -10,9 +10,16 @@
 6. Test with POSTMAN App
 7. Open Swagger UI: http://localhost:8080/swagger-ui
 
+Swagger UI
+
+![Swagger UI](img/Swagger-UI.png "Swagger UI")
+
 ### Test API
 
+
 Add New Data
+
+![Add New Data](img/User-Registration.png "Add New Data")
 
 ```shell
 curl -X 'POST' \
@@ -27,6 +34,8 @@ curl -X 'POST' \
 ```
 
 Login User Data
+
+![Login User Data](img/User-Login.png "Login User Data")
 
 ```shell
 curl -X 'POST' \
