@@ -52,13 +52,16 @@ public class JwtGenerator {
     }
 
     public String getUsernameFromJWT(String token) {
-        Claims claims = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody();
+        Claims claims =
+                Jwts.parser()
+                        .setSigningKey(secretKey).build()
+                        .parseClaimsJws(token).getBody();
         return claims.getSubject();
     }
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
+            Jwts.parser().setSigningKey(secretKey).build().parseClaimsJws(token);
             return true;
         } catch (Exception ex) {
             throw new AuthenticationCredentialsNotFoundException("JWT was exprired or incorrect",
@@ -67,7 +70,7 @@ public class JwtGenerator {
     }
 
     public List<String> getRolesFromJWT(String token) {
-        Claims claims = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody();
+        Claims claims = Jwts.parser().setSigningKey(secretKey).build().parseClaimsJws(token).getBody();
         return claims.get("roles", List.class);
     }
 }
