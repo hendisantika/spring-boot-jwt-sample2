@@ -65,4 +65,9 @@ public class JwtGenerator {
                     ex.fillInStackTrace());
         }
     }
+
+    public List<String> getRolesFromJWT(String token) {
+        Claims claims = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody();
+        return claims.get("roles", List.class);
+    }
 }
