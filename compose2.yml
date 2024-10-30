@@ -1,0 +1,28 @@
+#services:
+#  postgres17:
+#    container_name: postgres17
+#    image: postgres:17-alpine3.20
+#    ports:
+#      - "5432:5432"
+#    volumes:
+#      - ./apps/postgres:/var/lib/postgresql/data
+#    environment:
+#      - POSTGRES_DB=jwt
+#      - POSTGRES_USER=hendisantika
+#      - POSTGRES_PASSWORD=hendi34
+services:
+  postgres17:
+    image: postgres:17-alpine3.20
+    network_mode: bridge
+    container_name: postgres17
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    expose:
+      - 5433
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_DB=jwt
+      - POSTGRES_USER=hendisantika
+      - POSTGRES_PASSWORD=hendi34
+    restart: unless-stopped
