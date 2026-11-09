@@ -1,13 +1,94 @@
 version: 2
 updates:
+  # Maven dependencies (pom.xml)
   - package-ecosystem: maven
     directory: "/"
     schedule:
       interval: daily
-      time: '05:00'
+      time: "05:00"
       timezone: Asia/Jakarta
     open-pull-requests-limit: 10
-  - package-ecosystem: "github-actions"
+    target-branch: main
+    assignees:
+      - hendisantika
+    labels:
+      - dependencies
+      - java
+    commit-message:
+      prefix: "chore(deps)"
+      prefix-development: "chore(deps-dev)"
+      include: scope
+    groups:
+      spring-boot:
+        patterns:
+          - "org.springframework.boot*"
+      spring-security:
+        patterns:
+          - "org.springframework.security*"
+      jjwt:
+        patterns:
+          - "io.jsonwebtoken*"
+      springdoc:
+        patterns:
+          - "org.springdoc*"
+      testcontainers:
+        patterns:
+          - "org.testcontainers*"
+      maven-minor-patch:
+        update-types:
+          - minor
+          - patch
+        exclude-patterns:
+          - "org.springframework.boot*"
+          - "org.springframework.security*"
+          - "io.jsonwebtoken*"
+          - "org.springdoc*"
+          - "org.testcontainers*"
+
+  # GitHub Actions workflows
+  - package-ecosystem: github-actions
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: daily
+      time: "05:00"
+      timezone: Asia/Jakarta
+    open-pull-requests-limit: 5
+    assignees:
+      - hendisantika
+    labels:
+      - dependencies
+      - github_actions
+    commit-message:
+      prefix: "ci(deps)"
+      include: scope
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+
+  # Docker images in compose.yml / compose2.yml
+  - package-ecosystem: docker-compose
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "05:00"
+      timezone: Asia/Jakarta
+    open-pull-requests-limit: 5
+    assignees:
+      - hendisantika
+    labels:
+      - dependencies
+      - docker
+    commit-message:
+      prefix: "chore(docker)"
+      include: scope
+    ignore:
+      # PostgreSQL major upgrades require a data migration
+      - dependency-name: "postgres"
+        update-types:
+          - version-update:semver-major
+    groups:
+      docker-images:
+        patterns:
+          - "*"
